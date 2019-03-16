@@ -1,0 +1,8 @@
+1.6.0
+	Adoption by Linuxgurugamer
+	Added AssemblyVersion.tt
+	Added .version file
+	Renamed mod
+	Merged in changes to config from forum user @ToXik-yogHurt
+	Reorganized release directory
+	Added build scripts

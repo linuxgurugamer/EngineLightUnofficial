@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace EngineLight
+namespace EngineLightRelit
 {
     class tjs_DecouplerLight : PartModule
     {

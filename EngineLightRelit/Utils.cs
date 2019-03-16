@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EngineLight
+namespace EngineLightRelit
 {
     //Not a MonoBehaviour!
     internal static class Utils
