@@ -1,3 +1,6 @@
+1.6.0.2
+	Fixed download link in .version file
+
 1.6.0.1
 	fix typos for spark/twitch
 	changed all occurances of OR operator "|" to the "," according to 
