@@ -1,3 +1,12 @@
+1.6.0.1
+	fix typos for spark/twitch
+	changed all occurances of OR operator "|" to the "," according to 
+	modulemanager wiki:
+		"(,<index>)? : Optional index. Again, not available with every option.
+		Not that these indexes are ''with respect to all name matches'' not the
+		total index in the node. I will support negative indexes for running 
+		backwards through the list soon. Also * is not yet supported."
+	
 1.6.0
 	Adoption by Linuxgurugamer
 	Added AssemblyVersion.tt
