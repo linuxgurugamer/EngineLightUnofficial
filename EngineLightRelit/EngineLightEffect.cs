@@ -426,17 +426,16 @@ namespace EngineLightRelit
 			Destroy(this.engineLightObject);
 		}
 
-		public override void OnFixedUpdate()
+		public void FixedUpdate()
 		{
 
+	        if (!initOccurred)
+	        {
 #if DEBUG
-	if (!initOccurred)
-	{
-		Utils.log("OnFixedUpdate() called before OnStart() - wtf even?");
-		initEngineLights();
-		return; // I guess this might happen for a frame or two while a scene is still loading? should be harmless - we can wait
-	}
+                Utils.log("FixedUpdate() called before OnStart() - wtf even?");
 #endif
+		        return; // I guess this might happen for a frame or two while a scene is still loading? should be harmless - we can wait
+	        }
 
 			try
 			{
@@ -557,7 +556,7 @@ namespace EngineLightRelit
 			}		
 			catch (Exception exception)
 			{
-				Utils.log("Error in OnFixedUpdate(): " + exception.Message);
+				Utils.log("Error in FixedUpdate(): " + exception.Message);
 			}
 		}
 
