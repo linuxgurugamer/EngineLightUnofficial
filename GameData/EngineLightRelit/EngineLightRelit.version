@@ -1,19 +1,16 @@
 {
-  "NAME":"Engine Lighting Relit",
-  "URL":"http://forum.kerbalspaceprogram.com/threads/121987",
-  "DOWNLOAD":"http://spacedock.info/mod/272/Engine%20Lighting",
-  "CHANGE_LOG_URL":"http://spacedock.info/mod/272/Engine%20Lighting",
-  "VERSION":
-  {
-    "MAJOR":1,
-    "MINOR":6,
-    "PATCH":6,
-    "BUILD":0
+  "NAME": "Engine Lighting Relit",
+  "URL": "http://ksp.spacetux.net/avc/EngineLightRelit",
+  "DOWNLOAD": "https://spacedock.info/mod/2111/Engine%20Lighting%20Relit",
+  "VERSION": {
+    "MAJOR": 1,
+    "MINOR": 6,
+    "PATCH": 0,
+    "BUILD": 4
   },
-  "KSP_VERSION_MIN":
-  {
-    "MAJOR":1,
-    "MINOR":4,
-    "PATCH":5
+  "KSP_VERSION_MIN": {
+    "MAJOR": 1,
+    "MINOR": 4,
+    "PATCH": 5
   }
 }
