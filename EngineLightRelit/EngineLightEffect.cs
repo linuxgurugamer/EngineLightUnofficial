@@ -429,7 +429,8 @@ namespace EngineLightRelit
 
 		public void FixedUpdate()
 		{
-
+            if (!HighLogic.LoadedSceneIsFlight)
+                return;
 	        if (!initOccurred)
 	        {
 #if DEBUG
