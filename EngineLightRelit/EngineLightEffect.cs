@@ -406,9 +406,10 @@ namespace EngineLightRelit
 			}
 		}
 
-		public override void OnStart(PartModule.StartState state)
+
+        public void Start()
 		{
-			if (state == StartState.Editor || state == StartState.None || initOccurred)
+            if (!HighLogic.LoadedSceneIsFlight || initOccurred)
 				return; //Beware the bugs!
 	
 #if DEBUG
@@ -432,7 +433,7 @@ namespace EngineLightRelit
 	        if (!initOccurred)
 	        {
 #if DEBUG
-                Utils.log("FixedUpdate() called before OnStart() - wtf even?");
+                Utils.log("FixedUpdate() called before Start() - wtf even?");
 #endif
 		        return; // I guess this might happen for a frame or two while a scene is still loading? should be harmless - we can wait
 	        }

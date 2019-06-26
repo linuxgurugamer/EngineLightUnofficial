@@ -56,15 +56,12 @@ namespace EngineLightRelit
         public bool wasDecouplerActive = false;
 
 
-        public override void OnStart(StartState state)
+        public void Start()
         {
+            if (!HighLogic.LoadedSceneIsFlight)
+                return;
             try
             {
-                if (state == StartState.Editor || state == StartState.None)
-                {
-                    return; //Beware the bugs!
-                }
-
                 GameObject decouplerLightGM = new GameObject();
                 decouplerLightGM.AddComponent<Light>();
 
@@ -112,7 +109,7 @@ namespace EngineLightRelit
 
 
 
-        public override void OnUpdate()
+        public  void Update()
         {
             try
             {

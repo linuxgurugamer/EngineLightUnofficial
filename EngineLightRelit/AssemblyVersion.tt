@@ -30,7 +30,6 @@
 	// For Visual Studio / MSBuild Build-Time Template Resolution
 	string RootDirectory = System.IO.Path.GetDirectoryName(Host.TemplateFile) + @"\..\";
 	
-
 	//
 	// Update the following with the name of the .version file which is in the root directory
 	//
