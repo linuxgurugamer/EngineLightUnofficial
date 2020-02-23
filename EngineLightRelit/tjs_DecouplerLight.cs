@@ -79,6 +79,8 @@ namespace EngineLightRelit
                     decouplerLightGM.GetComponent<Light>().color = new Color(lightRed, lightGreen, lightBlue);
 
                     decouplerLight = decouplerLightGM.GetComponent<Light>();
+                    
+                    decouplerLight.cullingMask &= ~(1 << vessel.mainBody.scaledBody.layer); //Prevents light from reaching the planet while in space
 
                     decouplerLight.enabled = false;
                 }
@@ -95,6 +97,8 @@ namespace EngineLightRelit
                     decouplerLightGM.GetComponent<Light>().color = new Color(lightRed, lightGreen, lightBlue);
 
                     decouplerLight = decouplerLightGM.GetComponent<Light>();
+                    
+                    decouplerLight.cullingMask &= ~(1 << vessel.mainBody.scaledBody.layer); //Prevents light from reaching the planet while in space
 
                     decouplerLight.enabled = false;
                 }
@@ -120,6 +124,7 @@ namespace EngineLightRelit
                         if (decouplerModule.isDecoupled)
                         {
                             wasDecouplerActive = true;
+                            decouplerLight.cullingMask &= ~(1 << vessel.mainBody.scaledBody.layer); //Prevents light from reaching the planet while in space
                             decouplerLight.enabled = true;
                             StartCoroutine("shutLightDown");
                         }
@@ -129,6 +134,7 @@ namespace EngineLightRelit
                         if (decouplerModuleA.isDecoupled)
                         {
                             wasDecouplerActive = true;
+                            decouplerLight.cullingMask &= ~(1 << vessel.mainBody.scaledBody.layer); //Prevents light from reaching the planet while in space
                             decouplerLight.enabled = true;
                             StartCoroutine("shutLightDown");
                         }
