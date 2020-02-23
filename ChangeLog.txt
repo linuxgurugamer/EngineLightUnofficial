@@ -1,5 +1,9 @@
 ChangeLog
 
+1.6.2.3
+	Thanks to github user @FrostBird347 for this:
+		Stop light from reaching the planet while in space
+
 1.6.2.2
 	Really did the MiniAVC update
 
