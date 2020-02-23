@@ -521,6 +521,8 @@ namespace EngineLightRelit
 				}
 				
 				engineLightObject.transform.localPosition = lightOffset;
+				
+				engineLight.cullingMask &= ~(1 << vessel.mainBody.scaledBody.layer); //Prevents light from reaching the planet while in space
 
 #if DEBUG
 
