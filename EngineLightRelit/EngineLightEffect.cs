@@ -210,10 +210,16 @@ namespace EngineLightRelit
 		// on start many of these are used to initialise internal Color structs and then never read again
 
 		[KSPField]
-		public float lightPower = 1.0f; //LightSource power (gets a percentage based on thrust)
+		public float _lightPower = 1.0f; //LightSource power (gets a percentage based on thrust)
+
+		float lightPowerAdjust = 0f;
+		// Utils.clampValue(_lightPower, 0, MAXIMUM_LIGHT_INTENSITY, "light intensity");
+		public float LightPower {  get { return Utils.clampValue(_lightPower * lightPowerAdjust * HighLogic.CurrentGame.Parameters.CustomParams<EL>().lightPower, 0, MAXIMUM_LIGHT_INTENSITY, "light intensity"); } }
 
 		[KSPField]
-		public float lightRange = 9f; // modified, down from 40 to 9
+		public float _lightRange = 9f; // modified, down from 40 to 9
+
+		public float LightRange {  get { return _lightRange * HighLogic.CurrentGame.Parameters.CustomParams<EL>().lightRange; } }
 
 		[KSPField]
 		public float exhaustRed = 1.0f;
@@ -285,8 +291,9 @@ namespace EngineLightRelit
 		public bool enableEmissiveLight = true;
 
 		[KSPField]
-		public float lightFadeCoefficient = 0.8f; // keep less than 1	
+		public float _lightFadeCoefficient = 0.8f; // keep less than 1	
 
+		public float LightFadeCoefficient {  get { return _lightFadeCoefficient * HighLogic.CurrentGame.Parameters.CustomParams<EL>().lightFadeCoefficient; } }
 
 		protected bool initOccurred = false; // this is a bit icky - but it's just for debugging
 
@@ -296,7 +303,7 @@ namespace EngineLightRelit
 		protected LightStates lightState = LightStates.Disabled;
 		protected LightStates lastFrameLightState = LightStates.Disabled;
 
-		EngineModule engineModule;
+		EngineModule engineModule = null;
 
 		JitterBuffer jitterBuffer;
 
@@ -325,7 +332,7 @@ namespace EngineLightRelit
 			try 
 			{
 				// wrap the parts engine module(s) and FX modules for simpler calls later	        
-				engineModule = new EngineModule(this.part);
+				if (engineModule == null) engineModule = new EngineModule(this.part);
 				
 				if (!engineModule.hasEmissive) // not all engines have emissives
 					enableEmissiveLight = false;
@@ -349,17 +356,17 @@ namespace EngineLightRelit
 				float maxThrust = engineModule.getMaxThrust();
 
 				// calculate light power from engine max thrust - follows a quadratic:
-				lightPower = ((LIGHT_CURVE * maxThrust * maxThrust)
+				lightPowerAdjust = ((LIGHT_CURVE * maxThrust * maxThrust)
 							+ (LIGHT_LINEAR * maxThrust)
-							+ LIGHT_MINIMUM)
-							* lightPower; // use the multiplier read from config file
+							+ LIGHT_MINIMUM);
+							//* LightPower; // use the multiplier read from config file
 
-				lightPower = Utils.clampValue(lightPower, 0, MAXIMUM_LIGHT_INTENSITY, "light intensity");
+				//_lightPower = Utils.clampValue(_lightPower, 0, MAXIMUM_LIGHT_INTENSITY, "light intensity");
 
 				// old config used 40 as default - but that was way too high:
 				// it caused light to reach planetary surfaces from low orbit: 20 is a more sensible max value
 				// less considering the minimum offset I've introduced
-				lightRange = Utils.clampValue(lightRange, 0, MAXIMUM_LIGHT_RANGE, "light range");
+				_lightRange = Utils.clampValue(_lightRange, 0, MAXIMUM_LIGHT_RANGE, "light range");
 
 				jitterMultiplier = Utils.clampValue(jitterMultiplier, 0, MAXIMUM_JITTER, "jitter multiplier");
 
@@ -391,7 +398,7 @@ namespace EngineLightRelit
 
 				// this is how you do debug only printing...	
 #if DEBUG
-	Utils.log("Light calculations (" + this.part.name + ") resulted in: " + lightPower);
+	Utils.log("Light calculations (" + this.part.name + ") resulted in: " + LightPower);
 	Utils.log("coords of engine: " + engineModule.transform.position);
 	Utils.log("coords of thrust: " + averageThrustTransform);
 	//Utils.log("coords of thrust offset: " + thrustOffset);
@@ -438,7 +445,11 @@ namespace EngineLightRelit
 #endif
 		        return; // I guess this might happen for a frame or two while a scene is still loading? should be harmless - we can wait
 	        }
-
+			if (  DynamicSettings.ConfigChanged)
+            {
+				initEngineLights();
+				DynamicSettings.ConfigChanged = false;
+			}
 			try
 			{
 				// these _really_ shouldn't be happening - if one does we need to fix it, not ignore it. 
@@ -462,8 +473,8 @@ namespace EngineLightRelit
 
 				// smooth the drop-off in intensity from sudden throttle decreases
 				// the exhaust is still somewhat present, and that's what's supposed to be emitting the light
-				if (lastFrameThrottle > 0 && (lastFrameThrottle - throttle / lastFrameThrottle) > (1 - lightFadeCoefficient))
-					throttle = lastFrameThrottle * lightFadeCoefficient;
+				if (lastFrameThrottle > 0 && (lastFrameThrottle - throttle / lastFrameThrottle) > (1 - LightFadeCoefficient))
+					throttle = lastFrameThrottle * LightFadeCoefficient;
 
 				// d'awww, it's a wee finite state machine!
 				lightState = LightStates.Disabled;
@@ -531,7 +542,7 @@ namespace EngineLightRelit
 		if (engineModule.isEnabled)
 		{
 			Utils.log("part: " + part.name);
-			Utils.log("fade rate: " + lightFadeCoefficient);
+			Utils.log("fade rate: " + LightFadeCoefficient);
 			Utils.log("lightstate: " + lightState);
 			Utils.log("throttle: " + throttle);
 			Utils.log("jittered throttle: " + jitteredThrottle);
@@ -572,8 +583,8 @@ namespace EngineLightRelit
 		{
 			//this is how we keep the maths to a minimum
 			jitteredThrottle = throttle + jitterBuffer.getAverage() * jitterMultiplier; // per-frame jitter was annoying, now it's smoothed
-			engineLight.intensity = MINIMUM_LIGHT_INTENSITY + lightPower * jitteredThrottle * jitteredThrottle; // exponential increase in intensity with throttle
-			engineLight.range = minimumLightRange + lightRange * jitteredThrottle; // linear increase in range with throttle
+			engineLight.intensity = MINIMUM_LIGHT_INTENSITY + LightPower * jitteredThrottle * jitteredThrottle; // exponential increase in intensity with throttle
+			engineLight.range = minimumLightRange + LightRange * jitteredThrottle; // linear increase in range with throttle
 		}
 
 		protected void setIntensityFromEmissive()

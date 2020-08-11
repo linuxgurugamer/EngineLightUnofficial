@@ -1,5 +1,14 @@
 ChangeLog
 
+1.6.3
+	Added configurable settings for three values
+	Added stock setting page for the three values
+	Added window to allow adjustment during flight
+	Added toolbar buttons to control window
+	Added dependencies
+		ToolbarController
+		ClickThroughBlocker
+
 1.6.2.3
 	Thanks to github user @FrostBird347 for this:
 		Stop light from reaching the planet while in space
