@@ -120,21 +120,31 @@ namespace EngineLightRelit
 				/* nothing to do - no emissive isn't a big deal really */
 			}
 		}
-		
+
 		public float getThrottle()
 		{
-			if (moduleCount == 1)
-				return modules[0].currentThrottle;
-			else
-			{
-				// return the greatest throttle setting of available engine modules
-				float throttle = 0;
-				for (int i=0; i<moduleCount; ++i)
-					throttle = (modules[i].currentThrottle > throttle) ? modules[i].currentThrottle : throttle;
+            float throttle = 0;
+            if (moduleCount == 1)
+            {
+                if (modules[0].EngineIgnited)
+                {
+                    throttle = modules[0].currentThrottle;
+                }
+            }
+            else
+            {
+                // return the greatest throttle setting of available engine modules
+                for (int i = 0; i < moduleCount; ++i)
+                {
+                    if (modules[i].EngineIgnited)
+                    {
+                        throttle = (modules[i].currentThrottle > throttle) ? modules[i].currentThrottle : throttle;
+                    }
+                }
 
-				return throttle;
-			}
-		}
+            }
+            return throttle;
+        }
 
 		public float getEmissive()
 		{
